@@ -20,30 +20,53 @@
                 if (mysqli_num_rows($result)>0) {
                     //User exist with this Email ID
                     //Now will check for the password value if it matches particular value or not.
-                    $passMatchQuery = "SELECT email,username,fullname,dob,mobile,gender,id FROM users WHERE email='$email' AND pass='$md5pass'";
+                    $passMatchQuery = "SELECT id FROM users WHERE email='$email' AND pass='$md5pass'";
                     $passResult = mysqli_query($con,$passMatchQuery);
                     if (mysqli_num_rows($passResult)>0) {
                         //User is Valid, Login Success!
-                        $dataOutput = array();
-                        while ($row = mysqli_fetch_row($passResult)) {
-                            $dataOutput = $row;
+                        //Also we need to update the login status in the users table
+                        $dataOut = array();
+                        while ($r = mysqli_fetch_row($passResult)) {
+                            $dataOut = $r;
                         }
-                        $emailValue = $dataOutput[0];
-                        $username = $dataOutput[1];
-                        $fullname = $dataOutput[2];
-                        $dob = $dataOutput[3];
-                        $mobile = $dataOutput[4];
-                        $gender =$dataOutput[5];
-                        $id = $dataOutput[6];
-
-                        $data['status']='success';
-                        $data['email']=$emailValue;
-                        $data['username']=$username;
-                        $data['fullname']=$fullname;
-                        $data['dob']=$dob;
-                        $data['mobile']=$mobile;
-                        $data['gender']=$gender;
-                        $data['userid']=$id;
+                        $idValue = $dataOut[0];
+                        $status = 1; //for login success.
+                        $queryStmt = "UPDATE users SET login_status='$status' WHERE id='$idValue'";
+                        $resultLogout = mysqli_query($con,$queryStmt);
+                        if ($resultLogout) {
+                            //Now status is set to 1 for Logged in.
+                            //Now we will again get all the values from the users table to get the updated value login_status.
+                            $q =  "SELECT email,username,fullname,dob,mobile,gender,id,login_status FROM users WHERE email='$email' AND pass='$md5pass'";
+                            $finalResult = mysqli_query($con,$q);
+                            if (mysqli_num_rows($finalResult)>0) {
+                                $dataOutput = array();
+                                while ($row = mysqli_fetch_row($finalResult)) {
+                                    $dataOutput = $row;
+                                }
+                                $emailValue = $dataOutput[0];
+                                $username = $dataOutput[1];
+                                $fullname = $dataOutput[2];
+                                $dob = $dataOutput[3];
+                                $mobile = $dataOutput[4];
+                                $gender =$dataOutput[5];
+                                $id = $dataOutput[6];
+                                $logStatus = $dataOutput[7];
+                                //Status Updated
+                                $data['status']='success';
+                                $data['email']=$emailValue;
+                                $data['username']=$username;
+                                $data['fullname']=$fullname;
+                                $data['dob']=$dob;
+                                $data['mobile']=$mobile;
+                                $data['gender']=$gender;
+                                $data['userid']=$id;
+                                $data['login_status']=$logStatus;
+                            }
+                        } else {
+                            //Server Error
+                            $data['error'] = false;
+                            $data['message'] = 'Server Error!, Try Again Later';
+                        }
                     } else {
                         //Invalid Password
                         $data['error']=true;

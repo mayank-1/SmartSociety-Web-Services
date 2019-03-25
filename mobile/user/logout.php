@@ -23,7 +23,7 @@
                     }
                     $loginStatus = $dataResult[0];
                     if ($loginStatus == 1) {
-                        //Set it to 0 for Logout.
+                        //Set it to 0 for Logout and 1 for Login
                         $status = 0;
                         $queryStmt = "UPDATE users SET login_status='$status' WHERE id='$id'";
                         $resultLogout = mysqli_query($con,$queryStmt);
