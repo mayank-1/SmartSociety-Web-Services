@@ -61,7 +61,7 @@
                                 
                                 $deviceID = $_REQUEST['device_id'];
                                 $createdDate = date('Y-m-d', time());
-                                if ($_REQUEST['login_status']) {
+                                if (isset($_REQUEST['login_status'])) {
                                     $loginStatus = 1;
                                 } else {
                                     $loginStatus = 0;
@@ -70,15 +70,15 @@
                                 $createQuery = "INSERT INTO users (id,username,fullname,email,pass,mobile,gender,dob,device_id,login_status,created_on) VALUES ('$randomID','$newUsername','$fullname','$email','$md5pass','$mobile','$gender','$finalDOB','$deviceID','$loginStatus','$createdDate')";
                                 if (mysqli_query($con,$createQuery)) {
 
-                                    //Done
-                                    $data['error'] = false;
-                                    $data['message']='success';
-                                    $data['loggedin']=$loginStatus;
-                                    $data['userid']=$randomID;
-                                    $data['fullname']=$fullname;
-                                    $data['username']=$newUsername;
-                                    $data['email']=$email;
-                                    $data['dob']=$dob;
+                                     //Done
+                                     $data['error'] = false;
+                                     $data['message']='success';
+                                     $data['loggedin']=$loginStatus;
+                                     $data['userid']=$randomID;
+                                     $data['fullname']=$fullname;
+                                     $data['username']=$newUsername;
+                                     $data['email']=$email;
+                                     $data['dob']=$dob;
                                 } else {
                                     //Failure
                                     $data['error'] = true;
