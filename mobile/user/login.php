@@ -65,15 +65,18 @@
                         } else {
                             //Server Error
                             $data['error'] = false;
+                            $data['status'] = 'Server Error!, Try Again Later';
                             $data['message'] = 'Server Error!, Try Again Later';
                         }
                     } else {
                         //Invalid Password
                         $data['error']=true;
+                        $data['status']='Invalid Password';
                         $data['message']='Invalid Password';  
                     }
                 } else {
                     $data['error']=true;
+                    $data['status']='Email Id does not exist!';
                     $data['message']='Email Id does not exist!';
                 }
             } else {
